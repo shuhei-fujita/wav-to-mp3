@@ -1,36 +1,53 @@
-# wav-to-mp4.sh 使い方
+# wav-to-mp4 & merge-audio-video シェルスクリプト集
 
-このリポジトリには、WAV音声ファイルをMP4動画（静止画付き）に変換するシェルスクリプト `wav-to-mp4.sh` が含まれています。
+## このリポジトリの目的
+notebookLMやvrewアプリの出力ファイル（WAV音声や音声なしMP4）を、YouTube等にアップロード可能な動画に変換・合成するためのシェルスクリプト集です。
 
-## 概要
-- 入力: WAVファイル（例: `input.wav`）
-- 出力: MP4ファイル（例: `input.mp4`）
-- 変換時にカバー画像（`cover.jpg`）が必要です
-- 変換途中でMP3ファイルを一時生成しますが、最終的に削除されます
+### ディレクトリ構成例（推奨）
+- `audios/` … 音声ファイル（wav, mp3）
+- `videos/` … 動画ファイル（mp4, mov, 出力ファイルもここに保存）
+- `covers/` … カバー画像ファイル（jpg, png など）
 
-## 必要なもの
-- ffmpeg（インストールされている必要があります）
-- cover.jpg（MP4に埋め込む静止画像。スクリプトと同じディレクトリに配置してください）
+### 使い分け
+- **wav-to-mp4.sh** : WAV（またはMP3）音声＋静止画からMP4動画を作成
+- **merge-audio-video.sh** : 音声なし動画（mp4/mov）＋WAV音声を合成して音声付きMP4動画を作成
 
-## 使い方
-```sh
-./wav-to-mp4.sh 入力ファイル.wav
-```
-例:
-```sh
-./wav-to-mp4.sh General\ Questions\ on\ the\ Small\ Business\ Subsidies.wav
-```
+---
 
-## 実行の流れ
-1. WAVファイルをMP3に変換
-2. cover.jpgとMP3を合成してMP4を生成
-3. 中間生成物（MP3）を自動削除
+## wav-to-mp4.sh
+- **用途:** WAV/MP3音声とカバー画像からMP4動画を作成
+- **使い方:**
+  ```sh
+  ./wav-to-mp4.sh audios/input.wav covers/cover1.jpg
+  # カバー画像省略時は covers/cover.jpg が使われます
+  ```
+- **例:**
+  ```sh
+  ./wav-to-mp4.sh audios/input.wav
+  ./wav-to-mp4.sh audios/input.wav covers/cover1.jpg
+  ```
+- **出力:** videos/input.mp4 に保存されます
+- **注意:** カバー画像が存在しない場合はエラーで停止します
 
-## 注意事項
-- `cover.jpg` が存在しない場合、スクリプトはエラーで停止します
-- ffmpegが必要です。インストールされていない場合は、以下でインストールできます:
-  - macOS: `brew install ffmpeg`
-  - Ubuntu: `sudo apt install ffmpeg`
+---
 
-## ライセンス
-ご自由にご利用ください。 
+## merge-audio-video.sh
+- **用途:** 音声なし動画（mp4/mov）とWAV音声を合成し、音声付きMP4動画を作成
+- **使い方:**
+  ```sh
+  ./merge-audio-video.sh videos/input.mov audios/input.wav
+  # 出力ファイル名省略時は videos/merged_input_input.mp4 形式で自動生成
+  ```
+- **例:**
+  ```sh
+  ./merge-audio-video.sh videos/input.mov audios/input.wav
+  ./merge-audio-video.sh videos/input.mov audios/input.wav video/myvideo.mp4
+  ```
+- **出力:** videos/ ディレクトリに保存されます
+- **注意:** movのProResコーデック等も自動的にH.264(mp4)に変換されます
+
+---
+
+## ffmpegのインストール
+- macOS: `brew install ffmpeg`
+- Ubuntu: `sudo apt install ffmpeg`
